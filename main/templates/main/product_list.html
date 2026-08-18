@@ -1,0 +1,18 @@
+{% extends "main/base.html" %}
+
+{% block title %} {{ title }} {% endblock title %}
+
+{% block main %} 
+
+    <h2>Товари</h2>
+    <div>
+        {% for product in products %}
+            <div>
+                <h3>{{ product.name }}</h3>
+                <p>Ціна: {{ product.price }}</p>
+                <p>Опис: {{ product.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    
+{% endblock main %}
