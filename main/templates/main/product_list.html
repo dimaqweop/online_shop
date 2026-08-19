@@ -1,18 +1,92 @@
-{% extends "main/base.html" %}
+{% extends 'main/base.html' %}
 
 {% block title %} {{ title }} {% endblock title %}
 
-{% block main %} 
+{% block main %}
+<div class="shop-layout">
+    <!-- Categories Menu Sidebar -->
+    <aside class="sidebar-section">
+        <div class="sidebar-card">
+            <h3 class="sidebar-title">
+                <i class="fa-solid fa-bars-staggered"></i>
+                <span>Категорії</span>
+            </h3>
+            <nav class="categories-menu">
+                <a href="{% url 'main:product_list' %}" class="category-item {% if not category %}active{% endif %}">
+                    <div class="cat-label">
+                        <i class="fa-solid fa-border-all cat-icon"></i>
+                        <span>Всі товари</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right cat-arrow"></i>
+                </a>
+                {% for cat in categories %}
+                <a href="{{ cat.get_absolute_url }}" class="category-item {% if category.slug == cat.slug %}active{% endif %}">
+                    <div class="cat-label">
+                        <i class="fa-solid fa-folder-open cat-icon"></i>
+                        <span>{{ cat.name }}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right cat-arrow"></i>
+                </a>
+                {% endfor %}
+            </nav>
+        </div>
+    </aside>
 
-    <h2>Товари</h2>
-    <div>
-        {% for product in products %}
-            <div>
-                <h3>{{ product.name }}</h3>
-                <p>Ціна: {{ product.price }}</p>
-                <p>Опис: {{ product.description }}</p>
-            </div>
-        {% endfor %}
-    </div>
-    
-{% endblock main %}
+    <!-- Product Catalog Section -->
+    <section class="catalog-section">
+        <div class="catalog-header">
+            <h1 class="catalog-title">
+                <i class="fa-solid fa-boxes-stacked title-icon"></i>
+                <span>{% if category %}{{ category.name }}{% else %}Всі товари{% endif %}</span>
+            </h1>
+            <span class="product-count">Знайдено товарів: {{ products|length }}</span>
+        </div>
+
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <div class="product-img-wrapper">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img" />
+                        {% else %}
+                        <div class="no-image">
+                            <i class="fa-regular fa-image no-img-icon"></i>
+                            <span>Зображення відсутнє</span>
+                        </div>
+                        {% endif %}
+                        <div class="product-badge">
+                            <i class="fa-solid fa-eye"></i> {{ product.views }}
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">
+                            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                        </h3>
+                        <p class="product-desc">{{ product.description|truncatewords:12 }}</p>
+                        <div class="product-footer">
+                            <div class="price-tag">
+                                <span class="price-value">{{ product.price }}</span>
+                                <span class="price-currency">грн</span>
+                            </div>
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Детальніше</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-catalog">
+                    <i class="fa-solid fa-box-open empty-icon"></i>
+                    <h3 class="empty-title">У цій категорії поки немає товарів</h3>
+                    <p class="empty-desc">Спробуйте обрати іншу категорію або повернутися до загального каталогу.</p>
+                    <a href="{% url 'main:product_list' %}" class="btn btn-outline">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>До всіх товарів</span>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock main %}

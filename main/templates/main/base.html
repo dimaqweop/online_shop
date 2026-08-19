@@ -1,23 +1,72 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} {% endblock title %}</title>
+    <title>{% block title %}Онлайн магазин{% endblock title %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body>
-    <header>
-        <h1>Онлайн магазин</h1>
+
+<body class="site-wrapper">
+    <header class="site-header">
+        <div class="site-container header-inner">
+            <a href="{% url 'main:product_list' %}" class="brand-logo">
+                <i class="fa-solid fa-bag-shopping brand-icon"></i>
+                <span class="brand-text">ShopMaster</span>
+            </a>
+
+            <div class="header-search">
+                <div class="search-input-group">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" placeholder="Пошук товарів..." class="search-input" />
+                </div>
+            </div>
+
+            <nav class="header-nav">
+                <a href="{% url 'main:product_list' %}" class="nav-link">
+                    <i class="fa-solid fa-store nav-icon"></i>
+                    <span>Каталог</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fa-solid fa-heart nav-icon"></i>
+                    <span>Закладки</span>
+                </a>
+                <a href="#" class="nav-link cart-link">
+                    <i class="fa-solid fa-cart-shopping nav-icon"></i>
+                    <span>Кошик</span>
+                    <span class="cart-badge">0</span>
+                </a>
+            </nav>
+        </div>
     </header>
 
-    <main>
-        {% block main %} 
-        
+    <main class="site-container main-wrapper">
+        {% block main %}
         {% endblock main %}
     </main>
 
-    <footer>
-        <p>© 2026 Всі права захищені</p>
+    <footer class="site-footer">
+        <div class="footer-bottom">
+            <div class="site-container footer-bottom-inner">
+                <p>© 2026 ShopMaster. Всі права захищені.</p>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
     </footer>
 </body>
+
 </html>
