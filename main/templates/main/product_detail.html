@@ -83,5 +83,54 @@
             </div>
         </div>
     </div>
+
+    <!-- Related Products Section -->
+    {% if related_products %}
+    <section class="related-products-section">
+        <div class="related-header">
+            <h2 class="related-title">
+                <i class="fa-solid fa-layer-group title-icon"></i>
+                <span>Схожі товари</span>
+            </h2>
+            <span class="product-count">Знайдено: {{ related_products|length }}</span>
+        </div>
+
+        <div class="product-grid">
+            {% for rel_product in related_products %}
+                <div class="product-card">
+                    <div class="product-img-wrapper">
+                        {% if rel_product.image %}
+                        <img src="{{ rel_product.image.url }}" alt="{{ rel_product.name }}" class="product-img" />
+                        {% else %}
+                        <div class="no-image">
+                            <i class="fa-regular fa-image no-img-icon"></i>
+                            <span>Зображення відсутнє</span>
+                        </div>
+                        {% endif %}
+                        <div class="product-badge">
+                            <i class="fa-solid fa-eye"></i> {{ rel_product.views }}
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">
+                            <a href="{{ rel_product.get_absolute_url }}">{{ rel_product.name }}</a>
+                        </h3>
+                        <p class="product-desc">{{ rel_product.description|truncatewords:10 }}</p>
+                        <div class="product-footer">
+                            <div class="price-tag">
+                                <span class="price-value">{{ rel_product.price }}</span>
+                                <span class="price-currency">грн</span>
+                            </div>
+                            <a href="{{ rel_product.get_absolute_url }}" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Детальніше</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
 </div>
 {% endblock main %}

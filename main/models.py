@@ -17,7 +17,7 @@ class Category(models.Model):
             return f"{self.name}"
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=100, db_index=True, verbose_name="Назва продукту")
     slug = models.SlugField(max_length=100, unique=True, verbose_name="Слаг для URL")
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True, verbose_name="Зображення")
