@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Product, Category
-from django.db.models import F
+from django.db.models import F, Q
 
 def product_list(request, category_slug=None):
     products = Product.objects.select_related('category').filter(is_active=True)
@@ -10,6 +10,12 @@ def product_list(request, category_slug=None):
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=category)
+
+    search_query = request.GET.get('q', '').strip()
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query) | Q(description__icontains=search_query)
+        )
 
     sort = request.GET.get('sort', 'new')
 
@@ -25,11 +31,12 @@ def product_list(request, category_slug=None):
         products = products.order_by('-created_at')
 
     context = {
-        "title": "Каталог товарів",
+        "title": f"Пошук: {search_query}" if search_query else "Каталог товарів",
         "categories": categories,
         "category": category,
         "products": products,
-        "current_sort": sort
+        "current_sort": sort,
+        "search_query": search_query
     }
     return render(request, "main/product_list.html", context)
 

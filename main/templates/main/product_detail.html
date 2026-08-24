@@ -1,9 +1,10 @@
 {% extends 'main/base.html' %}
 
-{% block title %} {{ product.name }} | ShopMaster {% endblock title %}
+{% block title %} {{ product.name }} | NovaStore {% endblock title %}
 
 {% block main %}
 <div class="product-detail-container">
+    <!-- Breadcrumb Navigation -->
     <div class="breadcrumb-nav">
         <a href="{% url 'main:product_list' %}" class="btn-back">
             <i class="fa-solid fa-arrow-left"></i>
@@ -15,8 +16,10 @@
         {% endif %}
     </div>
 
+    <!-- Main Product Card -->
     <div class="product-detail-card">
         <div class="detail-grid">
+            <!-- Left: Product Image -->
             <div class="detail-gallery">
                 {% if product.image %}
                 <img src="{{ product.image.url }}" alt="{{ product.name }}" class="detail-image" />
@@ -28,6 +31,7 @@
                 {% endif %}
             </div>
 
+            <!-- Right: Product Info -->
             <div class="detail-info">
                 <div class="detail-header">
                     {% if product.category %}
@@ -51,32 +55,17 @@
                     <h3 class="section-heading">
                         <i class="fa-solid fa-align-left"></i> Опис товару
                     </h3>
-                    <p class="detail-description">{{ product.description }}</p>
-                </div>
-
-                <div class="detail-features">
-                    <div class="feature-item">
-                        <i class="fa-solid fa-truck-fast feature-icon"></i>
-                        <div>
-                            <strong>Швидка доставка</strong>
-                            <p>1-3 дні по всій Україні</p>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fa-solid fa-shield-halved feature-icon"></i>
-                        <div>
-                            <strong>Гарантія якості</strong>
-                            <p>100% оригінальна продукція</p>
-                        </div>
+                    <div class="detail-description">
+                        {{ product.description|linebreaks }}
                     </div>
                 </div>
 
                 <div class="detail-actions">
-                    <button class="btn btn-primary btn-lg">
+                    <button type="button" class="btn btn-primary btn-lg">
                         <i class="fa-solid fa-cart-plus"></i>
                         <span>Додати в кошик</span>
                     </button>
-                    <button class="btn btn-outline btn-lg">
+                    <button type="button" class="btn btn-outline btn-lg" title="Додати в обране">
                         <i class="fa-solid fa-heart"></i>
                     </button>
                 </div>
@@ -121,9 +110,9 @@
                                 <span class="price-value">{{ rel_product.price }}</span>
                                 <span class="price-currency">грн</span>
                             </div>
-                            <a href="{{ rel_product.get_absolute_url }}" class="btn btn-primary btn-sm">
-                                <i class="fa-solid fa-circle-info"></i>
-                                <span>Детальніше</span>
+                            <a href="{{ rel_product.get_absolute_url }}" class="btn btn-buy-card">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>Купити</span>
                             </a>
                         </div>
                     </div>

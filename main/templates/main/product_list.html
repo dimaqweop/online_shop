@@ -1,6 +1,6 @@
 {% extends 'main/base.html' %}
 
-{% block title %} {{ title }} {% endblock title %}
+{% block title %} {{ title }} | NovaStore {% endblock title %}
 
 {% block main %}
 <div class="shop-layout">
@@ -47,6 +47,9 @@
                     <span>Сортування</span>
                 </h3>
                 <form method="GET" class="sidebar-sort-form">
+                    {% if search_query %}
+                    <input type="hidden" name="q" value="{{ search_query }}">
+                    {% endif %}
                     <div class="select-wrapper w-100">
                         <select name="sort" id="sort-select" class="sort-select w-100" onchange="this.form.submit()">
                             <option value="new" {% if current_sort == 'new' %}selected{% endif %}>Спочатку нові</option>
@@ -99,9 +102,9 @@
                                 <span class="price-value">{{ product.price }}</span>
                                 <span class="price-currency">грн</span>
                             </div>
-                            <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm">
-                                <i class="fa-solid fa-circle-info"></i>
-                                <span>Детальніше</span>
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-buy-card">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>Купити</span>
                             </a>
                         </div>
                     </div>
@@ -120,4 +123,4 @@
         </div>
     </section>
 </div>
-{% endblock main %}
+{% endblock main %}

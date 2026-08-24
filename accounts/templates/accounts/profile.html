@@ -1,0 +1,125 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Особистий кабінет - {{ user.username }} | NovaStore{% endblock title %}
+
+{% block main %}
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <!-- Profile Header / Banner -->
+        <div class="profile-header">
+            <div class="profile-avatar-wrapper">
+                <div class="profile-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
+            <div class="profile-heading-info">
+                <h1 class="profile-username">{{ user.username }}</h1>
+                <div class="profile-role-wrapper">
+                    {% if user.is_staff %}
+                    <span class="badge-role badge-admin">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Адміністратор</span>
+                    </span>
+                    {% else %}
+                    <span class="badge-role badge-user">
+                        <i class="fa-solid fa-user-check"></i>
+                        <span>Користувач</span>
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Details Section -->
+        <div class="profile-details">
+            <h2 class="profile-section-title">
+                <i class="fa-solid fa-id-card"></i>
+                <span>Інформація про акаунт</span>
+            </h2>
+
+            <div class="profile-info-grid">
+                <!-- Username Item -->
+                <div class="profile-info-item">
+                    <div class="info-icon-box">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="profile-info-label">Ім'я користувача</span>
+                        <span class="profile-info-value">{{ user.username }}</span>
+                    </div>
+                </div>
+
+                <!-- Email Item -->
+                <div class="profile-info-item">
+                    <div class="info-icon-box">
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="profile-info-label">Email-адреса</span>
+                        <span class="profile-info-value">{{ user.email|default:"Не вказано" }}</span>
+                    </div>
+                </div>
+
+                <!-- Date Joined Item -->
+                <div class="profile-info-item">
+                    <div class="info-icon-box">
+                        <i class="fa-regular fa-calendar-check"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="profile-info-label">Дата реєстрації</span>
+                        <span class="profile-info-value">{{ user.date_joined|date:"d.m.Y H:i" }}</span>
+                    </div>
+                </div>
+
+                <!-- Last Login Item -->
+                <div class="profile-info-item">
+                    <div class="info-icon-box">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="profile-info-label">Час останнього входу</span>
+                        <span class="profile-info-value">{{ user.last_login|date:"d.m.Y H:i"|default:"Перший сеанс" }}</span>
+                    </div>
+                </div>
+
+                <!-- Role Item -->
+                <div class="profile-info-item">
+                    <div class="info-icon-box">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="profile-info-label">Роль користувача</span>
+                        <span class="profile-info-value">
+                            {% if user.is_staff %}
+                            <strong class="text-admin">Адміністратор</strong>
+                            {% else %}
+                            <strong class="text-user">Користувач</strong>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Action Buttons -->
+        <div class="profile-actions">
+            <a href="{% url 'main:product_list' %}" class="btn-auth btn-auth-secondary">
+                <i class="fa-solid fa-store"></i>
+                <span>До каталогу товарів</span>
+            </a>
+
+            {% if user.is_staff %}
+            <a href="/admin/" target="_blank" class="btn-auth btn-auth-admin">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <span>Панель керування</span>
+            </a>
+            {% endif %}
+
+            <a href="{% url 'accounts:logout' %}" class="btn-auth btn-danger">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Вийти з акаунту</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock main %}
