@@ -10,29 +10,16 @@
             <!-- Секція Категорій -->
             <div class="sidebar-block-section">
                 <h3 class="sidebar-title">
-                    <i class="fa-solid fa-bars-staggered"></i>
                     <span>Категорії</span>
                 </h3>
                 <nav class="categories-menu">
                     <a href="{% url 'main:product_list' %}" class="category-item {% if not category %}active{% endif %}">
-                        <div class="cat-label">
-                            <i class="fa-solid fa-border-all cat-icon"></i>
-                            <span>Всі товари</span>
-                        </div>
-                        <div class="cat-meta">
-                            <i class="fa-solid fa-chevron-right cat-arrow"></i>
-                        </div>
+                        <span class="cat-label">Всі товари</span>
                     </a>
                     {% for cat in categories %}
                     <a href="{{ cat.get_absolute_url }}" class="category-item {% if category.slug == cat.slug %}active{% endif %}">
-                        <div class="cat-label">
-                            <i class="fa-solid fa-folder-open cat-icon"></i>
-                            <span>{{ cat.name }}</span>
-                        </div>
-                        <div class="cat-meta">
-                            <span class="cat-count">{{ cat.products.count }}</span>
-                            <i class="fa-solid fa-chevron-right cat-arrow"></i>
-                        </div>
+                        <span class="cat-label">{{ cat.name }}</span>
+                        <span class="cat-count">({{ cat.products.count }})</span>
                     </a>
                     {% endfor %}
                 </nav>
@@ -43,7 +30,6 @@
             <!-- Секція Сортування -->
             <div class="sidebar-block-section">
                 <h3 class="sidebar-title">
-                    <i class="fa-solid fa-arrow-down-short-wide"></i>
                     <span>Сортування</span>
                 </h3>
                 <form method="GET" class="sidebar-sort-form">
@@ -69,10 +55,9 @@
         <div class="catalog-header">
             <div class="catalog-header-info">
                 <h1 class="catalog-title">
-                    <i class="fa-solid fa-boxes-stacked title-icon"></i>
                     <span>{% if category %}{{ category.name }}{% else %}Всі товари{% endif %}</span>
                 </h1>
-                <span class="product-count">Знайдено товарів: {{ products|length }}</span>
+                <span class="product-count">Знайдено: {{ products|length }}</span>
             </div>
         </div>
 

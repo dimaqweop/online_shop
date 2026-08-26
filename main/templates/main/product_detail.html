@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load main_tags %}
 
 {% block title %} {{ product.name }} | NovaStore {% endblock title %}
 
@@ -69,6 +70,8 @@
                         <i class="fa-solid fa-heart"></i>
                     </button>
                 </div>
+
+                {% show_share_buttons product.name %}
             </div>
         </div>
     </div>

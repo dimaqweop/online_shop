@@ -24,7 +24,7 @@
     <!-- Header -->
     <header class="site-header">
         <div class="site-container header-inner">
-            <!-- Brand Logo -->
+            <!-- 1. Brand Logo -->
             <a href="{% url 'main:product_list' %}" class="brand-logo">
                 <div class="brand-icon-wrapper">
                     <i class="fa-solid fa-bag-shopping brand-icon"></i>
@@ -34,7 +34,13 @@
                 </div>
             </a>
 
-            <!-- Search Bar -->
+            <!-- 2. Catalog Button -->
+            <a href="{% url 'main:product_list' %}" class="btn-catalog">
+                <i class="fa-solid fa-bars-staggered"></i>
+                <span>Каталог</span>
+            </a>
+
+            <!-- 3. Search Bar -->
             <div class="header-search">
                 <form action="{% url 'main:product_list' %}" method="GET" class="search-form">
                     <div class="search-input-group">
@@ -47,11 +53,14 @@
                 </form>
             </div>
 
-            <!-- Header Navigation & Auth Buttons -->
-            <nav class="header-nav">
-                <a href="{% url 'main:product_list' %}" class="nav-link">
-                    <i class="fa-solid fa-store nav-icon"></i>
-                    <span>Каталог</span>
+            <!-- 4. Header Actions (Bookmarks, Cart, Auth/Profile) -->
+            <nav class="header-actions">
+                <a href="#" class="icon-nav-btn" title="Закладки" aria-label="Закладки">
+                    <i class="fa-regular fa-heart"></i>
+                </a>
+                <a href="#" class="icon-nav-btn cart-icon-btn" title="Кошик" aria-label="Кошик">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge">0</span>
                 </a>
 
                 <!-- Auth Navigation Buttons -->
@@ -82,16 +91,6 @@
                         </a>
                     {% endif %}
                 </div>
-
-                <a href="#" class="nav-link">
-                    <i class="fa-regular fa-heart nav-icon"></i>
-                    <span>Закладки</span>
-                </a>
-                <a href="#" class="nav-link cart-link">
-                    <i class="fa-solid fa-cart-shopping nav-icon"></i>
-                    <span>Кошик</span>
-                    <span class="cart-badge">0</span>
-                </a>
             </nav>
         </div>
     </header>

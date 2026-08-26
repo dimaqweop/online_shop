@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load account_filters account_tags %}
 
 {% block title %}Особистий кабінет - {{ user.username }} | NovaStore{% endblock title %}
 
@@ -18,12 +19,12 @@
                     {% if user.is_staff %}
                     <span class="badge-role badge-admin">
                         <i class="fa-solid fa-shield-halved"></i>
-                        <span>Адміністратор</span>
+                        <span>{{ user|user_role }}</span>
                     </span>
                     {% else %}
                     <span class="badge-role badge-user">
                         <i class="fa-solid fa-user-check"></i>
-                        <span>Користувач</span>
+                        <span>{{ user|user_role }}</span>
                     </span>
                     {% endif %}
                 </div>
@@ -67,7 +68,7 @@
                     </div>
                     <div class="info-content">
                         <span class="profile-info-label">Дата реєстрації</span>
-                        <span class="profile-info-value">{{ user.date_joined|date:"d.m.Y H:i" }}</span>
+                        <span class="profile-info-value">{{ user.date_joined|date:"d.m.Y H:i" }} ({% days_on_site user.date_joined %})</span>
                     </div>
                 </div>
 
@@ -90,11 +91,7 @@
                     <div class="info-content">
                         <span class="profile-info-label">Роль користувача</span>
                         <span class="profile-info-value">
-                            {% if user.is_staff %}
-                            <strong class="text-admin">Адміністратор</strong>
-                            {% else %}
-                            <strong class="text-user">Користувач</strong>
-                            {% endif %}
+                            <strong class="{% if user.is_staff %}text-admin{% else %}text-user{% endif %}">{{ user|user_role }}</strong>
                         </span>
                     </div>
                 </div>
