@@ -1,0 +1,263 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Редагування профілю | NovaStore{% endblock title %}
+
+{% block main %}
+<div class="auth-wrapper profile-edit-wrapper">
+    <div class="auth-card profile-edit-card">
+        <!-- Edit Header -->
+        <div class="auth-header">
+            <div class="auth-icon-badge">
+                <i class="fa-solid fa-user-pen"></i>
+            </div>
+            <h1 class="auth-title">Редагування профілю</h1>
+            <p class="auth-subtitle">Оновіть особисті дані та інформацію вашого облікового запису</p>
+        </div>
+
+        <!-- Current Avatar Preview -->
+        <div class="edit-avatar-preview-wrapper">
+            <div class="edit-avatar-preview" id="avatarPreviewContainer">
+                {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="profile-avatar-img" id="avatarPreviewImg">
+                {% else %}
+                <i class="fa-solid fa-user" id="avatarPreviewIcon"></i>
+                {% endif %}
+            </div>
+            <div class="edit-avatar-meta">
+                <span class="edit-avatar-username">{{ user.username }}</span>
+                <span class="edit-avatar-hint" id="avatarPreviewHint">Завантажте новий файл нижче, щоб змінити фото</span>
+            </div>
+        </div>
+
+        <!-- Non-field Errors -->
+        {% if user_form.non_field_errors or profile_form.non_field_errors %}
+        <div class="form-alert form-alert-error">
+            {% for error in user_form.non_field_errors %}
+            <div class="alert-message">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endfor %}
+            {% for error in profile_form.non_field_errors %}
+            <div class="alert-message">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Profile Edit Form -->
+        <form method="POST" action="{% url 'accounts:profile_edit' %}" enctype="multipart/form-data" class="auth-form" novalidate>
+            {% csrf_token %}
+
+            <!-- Section 1: User Information -->
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fa-solid fa-address-card"></i>
+                    <span>Основні дані</span>
+                </h3>
+
+                <!-- First Name Field -->
+                <div class="form-group {% if user_form.first_name.errors %}has-error{% endif %}">
+                    <label for="{{ user_form.first_name.id_for_label }}" class="form-label">
+                        <i class="fa-regular fa-user"></i>
+                        <span>Ім'я</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-font input-icon"></i>
+                        {{ user_form.first_name }}
+                    </div>
+                    {% if user_form.first_name.errors %}
+                    <div class="form-field-errors">
+                        {% for error in user_form.first_name.errors %}
+                        <span class="field-error-text"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Last Name Field -->
+                <div class="form-group {% if user_form.last_name.errors %}has-error{% endif %}">
+                    <label for="{{ user_form.last_name.id_for_label }}" class="form-label">
+                        <i class="fa-regular fa-user"></i>
+                        <span>Прізвище</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-signature input-icon"></i>
+                        {{ user_form.last_name }}
+                    </div>
+                    {% if user_form.last_name.errors %}
+                    <div class="form-field-errors">
+                        {% for error in user_form.last_name.errors %}
+                        <span class="field-error-text"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group {% if user_form.email.errors %}has-error{% endif %}">
+                    <label for="{{ user_form.email.id_for_label }}" class="form-label">
+                        <i class="fa-regular fa-envelope"></i>
+                        <span>Email-адреса</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-at input-icon"></i>
+                        {{ user_form.email }}
+                    </div>
+                    {% if user_form.email.errors %}
+                    <div class="form-field-errors">
+                        {% for error in user_form.email.errors %}
+                        <span class="field-error-text"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Section 2: Profile Information -->
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fa-solid fa-id-badge"></i>
+                    <span>Додаткова інформація</span>
+                </h3>
+
+                <!-- Avatar Field -->
+                <div class="form-group {% if profile_form.avatar.errors %}has-error{% endif %}">
+                    <label for="{{ profile_form.avatar.id_for_label }}" class="form-label">
+                        <i class="fa-regular fa-image"></i>
+                        <span>Аватар (фото профілю)</span>
+                    </label>
+                    <div class="input-file-wrapper">
+                        {{ profile_form.avatar }}
+                    </div>
+                    {% if profile_form.avatar.errors %}
+                    <div class="form-field-errors">
+                        {% for error in profile_form.avatar.errors %}
+                        <span class="field-error-text"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Bio Field -->
+                <div class="form-group {% if profile_form.bio.errors %}has-error{% endif %}">
+                    <label for="{{ profile_form.bio.id_for_label }}" class="form-label">
+                        <i class="fa-regular fa-comment-dots"></i>
+                        <span>Біографія / Про себе</span>
+                    </label>
+                    <div class="textarea-wrapper">
+                        {{ profile_form.bio }}
+                    </div>
+                    {% if profile_form.bio.errors %}
+                    <div class="form-field-errors">
+                        {% for error in profile_form.bio.errors %}
+                        <span class="field-error-text"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Birth Date Field -->
+                <div class="form-group {% if profile_form.birth_date.errors %}has-error{% endif %}">
+                    <label for="{{ profile_form.birth_date.id_for_label }}" class="form-label">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>Дата народження</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-calendar-day input-icon"></i>
+                        {{ profile_form.birth_date }}
+                    </div>
+                    {% if profile_form.birth_date.errors %}
+                    <div class="form-field-errors">
+                        {% for error in profile_form.birth_date.errors %}
+                        <span class="field-error-text"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Location Field -->
+                <div class="form-group {% if profile_form.location.errors %}has-error{% endif %}">
+                    <label for="{{ profile_form.location.id_for_label }}" class="form-label">
+                        <i class="fa-regular fa-map"></i>
+                        <span>Місцезнаходження / Місто</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-location-dot input-icon"></i>
+                        {{ profile_form.location }}
+                    </div>
+                    {% if profile_form.location.errors %}
+                    <div class="form-field-errors">
+                        {% for error in profile_form.location.errors %}
+                        <span class="field-error-text"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Website Field -->
+                <div class="form-group {% if profile_form.website.errors %}has-error{% endif %}">
+                    <label for="{{ profile_form.website.id_for_label }}" class="form-label">
+                        <i class="fa-solid fa-globe"></i>
+                        <span>Веб-сайт / Посилання</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-link input-icon"></i>
+                        {{ profile_form.website }}
+                    </div>
+                    {% if profile_form.website.errors %}
+                    <div class="form-field-errors">
+                        {% for error in profile_form.website.errors %}
+                        <span class="field-error-text"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Actions: Save & Cancel -->
+            <div class="form-actions-buttons">
+                <button type="submit" class="btn-auth btn-auth-primary">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Зберегти зміни</span>
+                </button>
+                <a href="{% url 'accounts:profile' %}" class="btn-auth btn-auth-secondary">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Скасувати</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const avatarInput = document.querySelector('input[type="file"][name="avatar"], input[type="file"]');
+    const previewContainer = document.getElementById('avatarPreviewContainer');
+    const previewHint = document.getElementById('avatarPreviewHint');
+
+    if (avatarInput && previewContainer) {
+        avatarInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Check if file is an image
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        previewContainer.innerHTML = `<img src="${event.target.result}" alt="Попередній перегляд" class="profile-avatar-img" id="avatarPreviewImg">`;
+                        if (previewHint) {
+                            previewHint.textContent = `Обрано: ${file.name}`;
+                            previewHint.style.color = 'var(--primary)';
+                            previewHint.style.fontWeight = '600';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock main %}

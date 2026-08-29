@@ -97,6 +97,27 @@
 
     <!-- Main Content -->
     <main class="site-container main-wrapper">
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert-box alert-{{ message.tags|default:'info' }}">
+                <div class="alert-icon">
+                    {% if message.tags == 'success' %}
+                        <i class="fa-solid fa-circle-check"></i>
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    {% else %}
+                        <i class="fa-solid fa-circle-info"></i>
+                    {% endif %}
+                </div>
+                <div class="alert-content">{{ message }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         {% block main %}
         {% endblock main %}
     </main>

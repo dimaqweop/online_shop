@@ -10,11 +10,18 @@
         <div class="profile-header">
             <div class="profile-avatar-wrapper">
                 <div class="profile-avatar">
+                    {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="profile-avatar-img">
+                    {% else %}
                     <i class="fa-solid fa-user"></i>
+                    {% endif %}
                 </div>
             </div>
             <div class="profile-heading-info">
                 <h1 class="profile-username">{{ user.username }}</h1>
+                {% if user.get_full_name %}
+                <span class="profile-fullname">{{ user.get_full_name }}</span>
+                {% endif %}
                 <div class="profile-role-wrapper">
                     {% if user.is_staff %}
                     <span class="badge-role badge-admin">
@@ -50,6 +57,17 @@
                     </div>
                 </div>
 
+                <!-- Full Name Item -->
+                <div class="profile-info-item">
+                    <div class="info-icon-box">
+                        <i class="fa-solid fa-signature"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="profile-info-label">Повне ім'я</span>
+                        <span class="profile-info-value">{{ user.get_full_name|default:"Не вказано" }}</span>
+                    </div>
+                </div>
+
                 <!-- Email Item -->
                 <div class="profile-info-item">
                     <div class="info-icon-box">
@@ -58,6 +76,45 @@
                     <div class="info-content">
                         <span class="profile-info-label">Email-адреса</span>
                         <span class="profile-info-value">{{ user.email|default:"Не вказано" }}</span>
+                    </div>
+                </div>
+
+                <!-- Location Item -->
+                <div class="profile-info-item">
+                    <div class="info-icon-box">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="profile-info-label">Місцезнаходження</span>
+                        <span class="profile-info-value">{{ user.profile.location|default:"Не вказано" }}</span>
+                    </div>
+                </div>
+
+                <!-- Website Item -->
+                <div class="profile-info-item">
+                    <div class="info-icon-box">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="profile-info-label">Веб-сайт</span>
+                        <span class="profile-info-value">
+                            {% if user.profile.website %}
+                            <a href="{{ user.profile.website }}" target="_blank" rel="noopener noreferrer" class="profile-website-link">{{ user.profile.website }}</a>
+                            {% else %}
+                            Не вказано
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Birth Date Item -->
+                <div class="profile-info-item">
+                    <div class="info-icon-box">
+                        <i class="fa-regular fa-calendar"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="profile-info-label">Дата народження</span>
+                        <span class="profile-info-value">{{ user.profile.birth_date|date:"d.m.Y"|default:"Не вказано" }}</span>
                     </div>
                 </div>
 
@@ -96,10 +153,26 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Bio Section -->
+            {% if user.profile.bio %}
+            <div class="profile-bio-box">
+                <h3 class="profile-bio-title">
+                    <i class="fa-regular fa-comment-dots"></i>
+                    <span>Про себе / Біографія</span>
+                </h3>
+                <p class="profile-bio-text">{{ user.profile.bio|linebreaksbr }}</p>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Profile Action Buttons -->
         <div class="profile-actions">
+            <a href="{% url 'accounts:profile_edit' %}" class="btn-auth btn-auth-primary">
+                <i class="fa-solid fa-user-pen"></i>
+                <span>Редагувати профіль</span>
+            </a>
+
             <a href="{% url 'main:product_list' %}" class="btn-auth btn-auth-secondary">
                 <i class="fa-solid fa-store"></i>
                 <span>До каталогу товарів</span>

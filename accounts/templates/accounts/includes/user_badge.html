@@ -1,0 +1,28 @@
+{% load account_filters %}
+{% if user and user.is_authenticated %}
+<div class="user-badge">
+    <div class="user-badge-avatar">
+        {% if user.profile.avatar %}
+        <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="user-badge-avatar-img">
+        {% else %}
+        <i class="fa-solid fa-user"></i>
+        {% endif %}
+    </div>
+    <div class="user-badge-info">
+        <span class="user-badge-name">{{ user.get_full_name|default:user.username }}</span>
+        <div class="user-badge-status">
+            {% if user.is_staff %}
+            <span class="badge-role badge-admin">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>{{ user|user_role }}</span>
+            </span>
+            {% else %}
+            <span class="badge-role badge-user">
+                <i class="fa-solid fa-user-check"></i>
+                <span>{{ user|user_role }}</span>
+            </span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
