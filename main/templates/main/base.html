@@ -97,6 +97,7 @@
 
     <!-- Main Content -->
     <main class="site-container main-wrapper">
+        {% block messages %}
         {% if messages %}
         <div class="messages-container">
             {% for message in messages %}
@@ -117,6 +118,7 @@
             {% endfor %}
         </div>
         {% endif %}
+        {% endblock messages %}
 
         {% block main %}
         {% endblock main %}
@@ -127,6 +129,12 @@
         <div class="footer-bottom">
             <div class="site-container footer-bottom-inner">
                 <p>© 2026 NovaStore. Всі права захищені.</p>
+                <div class="footer-links">
+                    <a href="{% url 'main:contact' %}" class="footer-link">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Контакти</span>
+                    </a>
+                </div>
                 <div class="social-icons">
                     <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                     <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>

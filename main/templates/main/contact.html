@@ -1,0 +1,99 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ title|default:"Контакти" }} | NovaStore{% endblock title %}
+
+{% block messages %}{% endblock messages %}
+
+{% block main %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <!-- Auth Header -->
+        <div class="auth-header">
+            <div class="auth-icon-badge">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+            <h1 class="auth-title">Зворотний зв'язок</h1>
+            <p class="auth-subtitle">Маєте запитання, пропозиції або потрібна допомога? Заповніть форму нижче!</p>
+        </div>
+
+        <!-- Messages Block -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert-box alert-{{ message.tags|default:'info' }}">
+                <div class="alert-icon">
+                    {% if message.tags == 'success' %}
+                        <i class="fa-solid fa-circle-check"></i>
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    {% else %}
+                        <i class="fa-solid fa-circle-info"></i>
+                    {% endif %}
+                </div>
+                <div class="alert-content">{{ message }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Non-field Errors -->
+        {% if form.non_field_errors %}
+        <div class="form-alert form-alert-error">
+            {% for error in form.non_field_errors %}
+            <div class="alert-message">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Contact Form -->
+        <form method="POST" action="{% url 'main:contact' %}" class="auth-form" novalidate>
+            {% csrf_token %}
+
+            <!-- Form Fields Render Loop -->
+            {% for field in form %}
+            <div class="form-group {% if field.errors %}has-error{% endif %}">
+                <div class="label-row">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        <span>{{ field.label }}</span>
+                        {% if field.field.required %}
+                        <span class="required-star" style="color: var(--accent-coral); font-weight: bold;">*</span>
+                        {% endif %}
+                    </label>
+                </div>
+
+                <div class="form-control-wrapper">
+                    {{ field }}
+                </div>
+
+                {% if field.errors %}
+                <div class="form-field-errors">
+                    {% for error in field.errors %}
+                    <span class="field-error-text">
+                        <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if field.help_text %}
+                <small class="field-help-text" style="color: var(--text-muted); font-size: 0.8rem;">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn-auth btn-auth-primary">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Надіслати повідомлення</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock main %}

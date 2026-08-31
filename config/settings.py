@@ -130,3 +130,22 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Local test Email send
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Налаштування реального SMTP-сервера через Gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+ 
+# Ваша електронна адреса Gmail
+EMAIL_HOST_USER = 'dimaqweop@gmail.com'
+ 
+# Пароль додатку (App Password), згенерований у налаштуваннях безпеки Google-акаунту
+# Увага: Звичайний пароль від пошти не підійде через двофакторну автентифікацію
+EMAIL_HOST_PASSWORD = 'ddtb tvoz onoo fqkm'
+ 
+# Email-адреса відправника за замовчуванням (зазвичай збігається з EMAIL_HOST_USER)
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
