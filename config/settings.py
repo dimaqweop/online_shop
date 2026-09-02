@@ -64,10 +64,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.context_processor.cart',
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -149,3 +151,5 @@ EMAIL_HOST_PASSWORD = 'ddtb tvoz onoo fqkm'
  
 # Email-адреса відправника за замовчуванням (зазвичай збігається з EMAIL_HOST_USER)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+CART_SESSION_ID = 'cart'

@@ -3,7 +3,7 @@
 <div class="user-badge">
     <div class="user-badge-avatar">
         {% if user.profile.avatar %}
-        <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="user-badge-avatar-img">
+        <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="user-badge-avatar-img" width="36" height="36">
         {% else %}
         <i class="fa-solid fa-user"></i>
         {% endif %}

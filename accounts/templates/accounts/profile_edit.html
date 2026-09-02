@@ -18,7 +18,7 @@
         <div class="edit-avatar-preview-wrapper">
             <div class="edit-avatar-preview" id="avatarPreviewContainer">
                 {% if user.profile.avatar %}
-                <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="profile-avatar-img" id="avatarPreviewImg">
+                <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="profile-avatar-img" id="avatarPreviewImg" width="120" height="120">
                 {% else %}
                 <i class="fa-solid fa-user" id="avatarPreviewIcon"></i>
                 {% endif %}
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (file.type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = function (event) {
-                        previewContainer.innerHTML = `<img src="${event.target.result}" alt="Попередній перегляд" class="profile-avatar-img" id="avatarPreviewImg">`;
+                        previewContainer.innerHTML = `<img src="${event.target.result}" alt="Попередній перегляд" class="profile-avatar-img" id="avatarPreviewImg" width="120" height="120">`;
                         if (previewHint) {
                             previewHint.textContent = `Обрано: ${file.name}`;
                             previewHint.style.color = 'var(--primary)';

@@ -1,0 +1,207 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %} {{ title }} | NovaStore {% endblock title %}
+
+{% block main %}
+<div class="cart-page-container">
+    <!-- Breadcrumb Navigation -->
+    <div class="breadcrumb-nav">
+        <a href="{% url 'main:product_list' %}" class="btn-back">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Назад до каталогу</span>
+        </a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Кошик покупок</span>
+    </div>
+
+    <!-- Page Title Bar -->
+    <div class="cart-header-bar">
+        <div class="cart-title-wrap">
+            <div class="cart-header-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <div>
+                <h1 class="cart-page-title">Ваш кошик</h1>
+                <p class="cart-page-subtitle">
+                    {% if cart|length > 0 %}
+                    У вашому кошику <strong>{{ cart|length }}</strong> {% if cart|length == 1 %}товар{% elif cart|length
+                    < 5 %}товари {% else %}товарів{% endif %} {% else %} Кошик порожній {% endif %} </p>
+            </div>
+        </div>
+    </div>
+
+    {% if cart|length > 0 %}
+    <div class="cart-layout-grid">
+        <!-- Left: Cart Items List -->
+        <div class="cart-items-section">
+            <div class="cart-card">
+                <div class="cart-table-header">
+                    <span class="col-product">Товар</span>
+                    <span class="col-price">Ціна</span>
+                    <span class="col-qty">Кількість</span>
+                    <span class="col-total">Сума</span>
+                    <span class="col-action"></span>
+                </div>
+
+                <div class="cart-items-list">
+                    {% for item in cart %}
+                    {% with product=item.product %}
+                    <div class="cart-item-row">
+                        <!-- Product Image & Title -->
+                        <div class="cart-product-info">
+                            <a href="{{ product.get_absolute_url }}" class="cart-img-wrap">
+                                {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="cart-thumb-img" width="80" height="80" loading="lazy">
+                                {% else %}
+                                <div class="cart-no-thumb">
+                                    <i class="fa-regular fa-image"></i>
+                                </div>
+                                {% endif %}
+                            </a>
+                            <div class="cart-product-details">
+                                {% if product.category %}
+                                <span class="cart-item-category">{{ product.category.name }}</span>
+                                {% endif %}
+                                <h3 class="cart-item-name">
+                                    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                                </h3>
+                                <span class="cart-item-mobile-price">{{ item.price }} грн / шт.</span>
+                            </div>
+                        </div>
+
+                        <!-- Unit Price -->
+                        <div class="cart-unit-price">
+                            <span class="price-val">{{ item.price }}</span>
+                            <span class="price-cur">грн</span>
+                        </div>
+
+                        <!-- Quantity Stepper with +/- and Type-in Input -->
+                        <div class="cart-item-qty">
+                            <form action="{% url 'main:cart_add' product.id %}" method="POST" class="cart-qty-stepper-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="override" value="True">
+                                <div class="cart-item-stepper">
+                                    <button type="button" class="btn-cart-step btn-step-minus" onclick="changeCartItemQty(this, -1)" title="Зменшити кількість" aria-label="Зменшити кількість для {{ product.name }}">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                    <label for="cart-qty-{{ product.id }}" class="visually-hidden">Кількість товару {{ product.name }}</label>
+                                    <input type="number" id="cart-qty-{{ product.id }}" name="quantity" value="{{ item.quantity }}" min="1" max="999" class="cart-qty-val-input" aria-label="Кількість товару {{ product.name }}" onchange="this.form.submit()" onkeypress="if(event.key==='Enter'){this.form.submit();}">
+                                    <button type="button" class="btn-cart-step btn-step-plus" onclick="changeCartItemQty(this, 1)" title="Збільшити кількість" aria-label="Збільшити кількість для {{ product.name }}">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Item Subtotal -->
+                        <div class="cart-item-total">
+                            <span class="total-val">{{ item.total_price }}</span>
+                            <span class="total-cur">грн</span>
+                        </div>
+
+                        <!-- Remove Button -->
+                        <div class="cart-item-remove">
+                            <form action="{% url 'main:cart_remove' product.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-remove-item" title="Видалити товар">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endwith %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function changeCartItemQty(btn, delta) {
+                const form = btn.closest('form');
+                const input = form.querySelector('.cart-qty-val-input');
+                let currentVal = parseInt(input.value) || 1;
+                let newVal = currentVal + delta;
+                if (newVal < 1) newVal = 1;
+                input.value = newVal;
+                form.submit();
+            }
+        </script>
+
+
+        <!-- Right: Order Summary Sidebar -->
+        <aside class="cart-summary-section">
+            <div class="order-summary-card">
+                <h2 class="summary-title">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Разом до сплати</span>
+                </h2>
+
+                <div class="summary-rows">
+                    <div class="summary-row">
+                        <span class="summary-label">Всього позицій:</span>
+                        <span class="summary-value">{{ cart|length }} шт.</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Вартість товарів:</span>
+                        <span class="summary-value">{{ cart.get_total_price }} грн</span>
+                    </div>
+                    <div class="summary-row delivery-row">
+                        <span class="summary-label">Доставка:</span>
+                        <span class="summary-value text-success">За тарифами перевізника</span>
+                    </div>
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-total-row">
+                    <span class="total-label">Загальна сума:</span>
+                    <div class="total-price-wrap">
+                        <span class="total-amount">{{ cart.get_total_price }}</span>
+                        <span class="total-currency">грн</span>
+                    </div>
+                </div>
+
+                <div class="summary-actions">
+                    <button type="button" class="btn btn-primary btn-checkout">
+                        <i class="fa-solid fa-shield-check"></i>
+                        <span>Оформити замовлення</span>
+                    </button>
+                </div>
+
+                <!-- Trust / Features Badges -->
+                <div class="summary-trust-badges">
+                    <div class="trust-badge-item">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <span>Швидка доставка Новою Поштою</span>
+                    </div>
+                    <div class="trust-badge-item">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>100% Безпечна оплата</span>
+                    </div>
+                    <div class="trust-badge-item">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Гарантія повернення 14 днів</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+    {% else %}
+    <!-- Empty Cart State -->
+    <div class="empty-cart-state">
+        <div class="empty-cart-icon-wrap">
+            <i class="fa-solid fa-basket-shopping"></i>
+        </div>
+        <h2 class="empty-cart-title">Ваш кошик порожній</h2>
+        <p class="empty-cart-subtitle">
+            Ви ще не додали жодного товару. Перегляньте наш каталог і оберіть те, що вам до вподоби!
+        </p>
+        <a href="{% url 'main:product_list' %}" class="btn btn-primary btn-lg btn-go-shop">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Перейти до покупок</span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock main %}

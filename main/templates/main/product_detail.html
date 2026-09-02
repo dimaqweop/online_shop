@@ -20,19 +20,32 @@
     <!-- Main Product Card -->
     <div class="product-detail-card">
         <div class="detail-grid">
-            <!-- Left: Product Image -->
-            <div class="detail-gallery">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="detail-image" />
-                {% else %}
-                <div class="detail-no-image">
-                    <i class="fa-regular fa-image detail-no-img-icon"></i>
-                    <span>Зображення відсутнє</span>
+            <!-- Left Column: Product Image & Description Underneath -->
+            <div class="detail-left-col">
+                <div class="detail-gallery">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="detail-image" width="600" height="600" />
+                    {% else %}
+                    <div class="detail-no-image">
+                        <i class="fa-regular fa-image detail-no-img-icon"></i>
+                        <span>Зображення відсутнє</span>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
+
+                <!-- Product Description (Directly Under Image) -->
+                <div class="detail-description-card">
+                    <h3 class="section-heading">
+                        <i class="fa-solid fa-align-left"></i>
+                        <span>Опис товару</span>
+                    </h3>
+                    <div class="detail-description">
+                        {{ product.description|linebreaks }}
+                    </div>
+                </div>
             </div>
 
-            <!-- Right: Product Info -->
+            <!-- Right Column: Product Buy Box & Info -->
             <div class="detail-info">
                 <div class="detail-header">
                     {% if product.category %}
@@ -52,23 +65,73 @@
                     <span class="detail-price">{{ product.price }} <small>грн</small></span>
                 </div>
 
-                <div class="detail-section">
-                    <h3 class="section-heading">
-                        <i class="fa-solid fa-align-left"></i> Опис товару
-                    </h3>
-                    <div class="detail-description">
-                        {{ product.description|linebreaks }}
-                    </div>
-                </div>
+                <!-- Add to Cart Form (No Django Form class needed) -->
+                <form action="{% url 'main:cart_add' product.id %}" method="POST" class="product-cart-form">
+                    {% csrf_token %}
+                    <div class="cart-form-controls">
+                        <div class="detail-qty-section">
+                            <label class="qty-section-label" for="product-qty-input">
+                                <i class="fa-solid fa-cubes-stacked"></i>
+                                <span>Кількість товару:</span>
+                            </label>
+                            
+                            <div class="detail-qty-field-wrap">
+                                <div class="detail-qty-stepper">
+                                    <button type="button" class="btn-qty-step" onclick="changeDetailQty(-1)" title="Зменшити кількість" aria-label="Зменшити кількість">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                    <input type="number" id="product-qty-input" name="quantity" value="1" min="1" max="999" class="detail-qty-input" aria-label="Кількість товару" oninput="handleQtyInput(this)">
+                                    <button type="button" class="btn-qty-step" onclick="changeDetailQty(1)" title="Збільшити кількість" aria-label="Збільшити кількість">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="quick-qty-group">
+                                    <button type="button" class="btn-quick-qty active" onclick="setDetailQty(1, this)">1 шт.</button>
+                                    <button type="button" class="btn-quick-qty" onclick="setDetailQty(2, this)">2 шт.</button>
+                                    <button type="button" class="btn-quick-qty" onclick="setDetailQty(3, this)">3 шт.</button>
+                                    <button type="button" class="btn-quick-qty" onclick="setDetailQty(5, this)">5 шт.</button>
+                                    <button type="button" class="btn-quick-qty" onclick="setDetailQty(10, this)">10 шт.</button>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="detail-actions">
-                    <button type="button" class="btn btn-primary btn-lg">
-                        <i class="fa-solid fa-cart-plus"></i>
-                        <span>Додати в кошик</span>
-                    </button>
-                    <button type="button" class="btn btn-outline btn-lg" title="Додати в обране">
-                        <i class="fa-solid fa-heart"></i>
-                    </button>
+                        <input type="hidden" name="next" value="{{ request.path }}">
+
+                        <div class="detail-actions">
+                            <button type="submit" class="btn btn-primary btn-lg btn-add-to-cart">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>Додати в кошик</span>
+                            </button>
+                            <button type="button" class="btn btn-outline btn-lg" title="Додати в обране">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Product Benefits & Guarantee Badges -->
+                <div class="detail-benefits-box">
+                    <div class="benefit-item">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <div class="benefit-text">
+                            <strong>Швидка доставка</strong>
+                            <span>Новою Поштою по всій Україні</span>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fa-solid fa-shield-blank"></i>
+                        <div class="benefit-text">
+                            <strong>100% Гарантія якості</strong>
+                            <span>Перевірений оригінальний товар</span>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fa-solid fa-arrow-rotate-left"></i>
+                        <div class="benefit-text">
+                            <strong>14 днів на повернення</strong>
+                            <span>Легке повернення або обмін</span>
+                        </div>
+                    </div>
                 </div>
 
                 {% show_share_buttons product.name %}
@@ -92,7 +155,7 @@
                 <div class="product-card">
                     <div class="product-img-wrapper">
                         {% if rel_product.image %}
-                        <img src="{{ rel_product.image.url }}" alt="{{ rel_product.name }}" class="product-img" />
+                        <img src="{{ rel_product.image.url }}" alt="{{ rel_product.name }}" class="product-img" width="300" height="300" loading="lazy" />
                         {% else %}
                         <div class="no-image">
                             <i class="fa-regular fa-image no-img-icon"></i>
@@ -113,10 +176,21 @@
                                 <span class="price-value">{{ rel_product.price }}</span>
                                 <span class="price-currency">грн</span>
                             </div>
-                            <a href="{{ rel_product.get_absolute_url }}" class="btn btn-buy-card">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                                <span>Купити</span>
-                            </a>
+                            <div class="card-buttons-group">
+                                <form action="{% url 'main:cart_add' rel_product.id %}" method="POST" class="card-add-cart-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                    <button type="submit" class="btn btn-card-add-cart" title="Додати в кошик">
+                                        <i class="fa-solid fa-cart-shopping"></i>
+                                        <span>В кошик</span>
+                                    </button>
+                                </form>
+                                <a href="{{ rel_product.get_absolute_url }}" class="btn btn-card-detail" title="Детальніше про товар">
+                                    <i class="fa-regular fa-eye"></i>
+                                    <span>Деталі</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -124,5 +198,43 @@
         </div>
     </section>
     {% endif %}
+
+    <script>
+        function changeDetailQty(delta) {
+            const input = document.getElementById('product-qty-input');
+            if (!input) return;
+            let currentVal = parseInt(input.value) || 1;
+            let newVal = currentVal + delta;
+            if (newVal < 1) newVal = 1;
+            if (newVal > 999) newVal = 999;
+            input.value = newVal;
+            syncQuickQtyButtons(newVal);
+        }
+
+        function setDetailQty(qty, btn) {
+            const input = document.getElementById('product-qty-input');
+            if (!input) return;
+            input.value = qty;
+            syncQuickQtyButtons(qty);
+        }
+
+        function handleQtyInput(input) {
+            let val = parseInt(input.value) || 1;
+            if (val < 1) val = 1;
+            if (val > 999) val = 999;
+            syncQuickQtyButtons(val);
+        }
+
+        function syncQuickQtyButtons(val) {
+            document.querySelectorAll('.btn-quick-qty').forEach(b => {
+                const num = parseInt(b.textContent);
+                if (num === val) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+        }
+    </script>
 </div>
 {% endblock main %}

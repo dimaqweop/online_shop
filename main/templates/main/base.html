@@ -42,11 +42,12 @@
 
             <!-- 3. Search Bar -->
             <div class="header-search">
-                <form action="{% url 'main:product_list' %}" method="GET" class="search-form">
+                <form action="{% url 'main:product_list' %}" method="GET" class="search-form" role="search">
                     <div class="search-input-group">
-                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                        <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="Пошук товарів..." class="search-input" />
-                        <button type="submit" class="search-submit-btn">
+                        <label for="header-search-input" class="visually-hidden">Пошук товарів</label>
+                        <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+                        <input type="text" id="header-search-input" name="q" value="{{ search_query|default:'' }}" placeholder="Пошук товарів..." class="search-input" aria-label="Пошук товарів" />
+                        <button type="submit" class="search-submit-btn" aria-label="Знайти товари">
                             <span>Знайти</span>
                         </button>
                     </div>
@@ -58,9 +59,9 @@
                 <a href="#" class="icon-nav-btn" title="Закладки" aria-label="Закладки">
                     <i class="fa-regular fa-heart"></i>
                 </a>
-                <a href="#" class="icon-nav-btn cart-icon-btn" title="Кошик" aria-label="Кошик">
+                <a href="{% url 'main:cart_detail' %}" class="icon-nav-btn cart-icon-btn" title="Кошик" aria-label="Кошик">
                     <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="cart-badge">0</span>
+                    <span class="cart-badge">{{ cart.quantity_in_cart }}</span>
                 </a>
 
                 <!-- Auth Navigation Buttons -->
@@ -128,21 +129,24 @@
     <footer class="site-footer">
         <div class="footer-bottom">
             <div class="site-container footer-bottom-inner">
-                <p>© 2026 NovaStore. Всі права захищені.</p>
-                <div class="footer-links">
-                    <a href="{% url 'main:contact' %}" class="footer-link">
+                <div class="footer-left-group">
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                    </div>
+                    <p class="footer-copyright">© 2026 NovaStore. Всі права захищені.</p>
+                </div>
+                <div class="footer-right-group">
+                    <a href="{% url 'main:contact' %}" class="footer-contact-btn">
                         <i class="fa-solid fa-envelope"></i>
                         <span>Контакти</span>
                     </a>
                 </div>
-                <div class="social-icons">
-                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
-                </div>
             </div>
         </div>
     </footer>
+
 </body>
 
 </html>

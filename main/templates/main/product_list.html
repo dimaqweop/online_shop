@@ -13,11 +13,13 @@
                     <span>Категорії</span>
                 </h3>
                 <nav class="categories-menu">
-                    <a href="{% url 'main:product_list' %}" class="category-item {% if not category %}active{% endif %}">
+                    <a href="{% url 'main:product_list' %}"
+                        class="category-item {% if not category %}active{% endif %}">
                         <span class="cat-label">Всі товари</span>
                     </a>
                     {% for cat in categories %}
-                    <a href="{{ cat.get_absolute_url }}" class="category-item {% if category.slug == cat.slug %}active{% endif %}">
+                    <a href="{{ cat.get_absolute_url }}"
+                        class="category-item {% if category.slug == cat.slug %}active{% endif %}">
                         <span class="cat-label">{{ cat.name }}</span>
                         <span class="cat-count">({{ cat.products.count }})</span>
                     </a>
@@ -36,13 +38,17 @@
                     {% if search_query %}
                     <input type="hidden" name="q" value="{{ search_query }}">
                     {% endif %}
+                    <label for="sort-select" class="visually-hidden">Сортування товарів</label>
                     <div class="select-wrapper w-100">
-                        <select name="sort" id="sort-select" class="sort-select w-100" onchange="this.form.submit()">
+                        <select name="sort" id="sort-select" class="sort-select w-100" aria-label="Сортування товарів" onchange="this.form.submit()">
                             <option value="new" {% if current_sort == 'new' %}selected{% endif %}>Спочатку нові</option>
                             <option value="old" {% if current_sort == 'old' %}selected{% endif %}>Спочатку старі</option>
-                            <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>За популярністю</option>
-                            <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Від дешевих до дорогих</option>
-                            <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Від дорогих до дешевих</option>
+                            <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>За популярністю
+                            </option>
+                            <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Від дешевих
+                                до дорогих</option>
+                            <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Від
+                                дорогих до дешевих</option>
                         </select>
                     </div>
                 </form>
@@ -63,47 +69,60 @@
 
         <div class="product-grid">
             {% for product in products %}
-                <div class="product-card">
-                    <div class="product-img-wrapper">
-                        {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img" />
-                        {% else %}
-                        <div class="no-image">
-                            <i class="fa-regular fa-image no-img-icon"></i>
-                            <span>Зображення відсутнє</span>
-                        </div>
-                        {% endif %}
-                        <div class="product-badge">
-                            <i class="fa-solid fa-eye"></i> {{ product.views }}
-                        </div>
+            <div class="product-card">
+                <div class="product-img-wrapper">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img" width="300" height="300" loading="lazy" />
+                    {% else %}
+                    <div class="no-image">
+                        <i class="fa-regular fa-image no-img-icon"></i>
+                        <span>Зображення відсутнє</span>
                     </div>
-                    <div class="product-content">
-                        <h3 class="product-title">
-                            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-                        </h3>
-                        <p class="product-desc">{{ product.description|truncatewords:12 }}</p>
-                        <div class="product-footer">
-                            <div class="price-tag">
-                                <span class="price-value">{{ product.price }}</span>
-                                <span class="price-currency">грн</span>
-                            </div>
-                            <a href="{{ product.get_absolute_url }}" class="btn btn-buy-card">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                                <span>Купити</span>
+                    {% endif %}
+                    <div class="product-badge">
+                        <i class="fa-solid fa-eye"></i> {{ product.views }}
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3 class="product-title">
+                        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                    </h3>
+                    <p class="product-desc">{{ product.description|truncatewords:12 }}</p>
+                    <div class="product-footer">
+                        <div class="price-tag">
+                            <span class="price-value">{{ product.price }}</span>
+                            <span class="price-currency">грн</span>
+                        </div>
+                        <div class="card-buttons-group">
+                            <form action="{% url 'main:cart_add' product.id %}" method="POST"
+                                class="card-add-cart-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                <button type="submit" class="btn btn-card-add-cart" title="Додати в кошик">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    <span>В кошик</span>
+                                </button>
+                            </form>
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-card-detail"
+                                title="Детальніше про товар">
+                                <i class="fa-regular fa-eye"></i>
+                                <span>Деталі</span>
                             </a>
                         </div>
                     </div>
                 </div>
+            </div>
             {% empty %}
-                <div class="empty-catalog">
-                    <i class="fa-solid fa-box-open empty-icon"></i>
-                    <h3 class="empty-title">У цій категорії поки немає товарів</h3>
-                    <p class="empty-desc">Спробуйте обрати іншу категорію або повернутися до загального каталогу.</p>
-                    <a href="{% url 'main:product_list' %}" class="btn btn-outline">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        <span>До всіх товарів</span>
-                    </a>
-                </div>
+            <div class="empty-catalog">
+                <i class="fa-solid fa-box-open empty-icon"></i>
+                <h3 class="empty-title">У цій категорії поки немає товарів</h3>
+                <p class="empty-desc">Спробуйте обрати іншу категорію або повернутися до загального каталогу.</p>
+                <a href="{% url 'main:product_list' %}" class="btn btn-outline">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>До всіх товарів</span>
+                </a>
+            </div>
             {% endfor %}
         </div>
 
@@ -114,7 +133,8 @@
                 <!-- Previous Button -->
                 {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-link page-link-prev" title="Попередня сторінка" aria-label="Попередня сторінка">
+                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}"
+                        class="page-link page-link-prev" title="Попередня сторінка" aria-label="Попередня сторінка">
                         <i class="fa-solid fa-angle-left"></i>
                     </a>
                 </li>
@@ -122,27 +142,28 @@
 
                 <!-- Page Numbers -->
                 {% for num in page_obj.paginator.page_range %}
-                    {% if page_obj.number == num %}
-                        <li class="page-item active" aria-current="page">
-                            <span class="page-link">{{ num }}</span>
-                        </li>
-                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <li class="page-item">
-                            <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-link">
-                                {{ num }}
-                            </a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-
-                <!-- Next Button -->
-                {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-link page-link-next" title="Наступна сторінка" aria-label="Наступна сторінка">
-                        <i class="fa-solid fa-angle-right"></i>
-                    </a>
+                {% if page_obj.number == num %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ num }}</span>
                 </li>
-                {% endif %}
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item">
+                    <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}"
+                        class="page-link">
+                        {{ num }}
+                    </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    <!-- Next Button -->
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}"
+                            class="page-link page-link-next" title="Наступна сторінка" aria-label="Наступна сторінка">
+                            <i class="fa-solid fa-angle-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
             </ul>
         </nav>
         {% endif %}

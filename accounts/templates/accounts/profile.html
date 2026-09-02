@@ -11,7 +11,7 @@
             <div class="profile-avatar-wrapper">
                 <div class="profile-avatar">
                     {% if user.profile.avatar %}
-                    <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="profile-avatar-img">
+                    <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="profile-avatar-img" width="120" height="120">
                     {% else %}
                     <i class="fa-solid fa-user"></i>
                     {% endif %}

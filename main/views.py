@@ -1,14 +1,14 @@
-from django.db.models.fields import related_descriptors
-from django.shortcuts import redirect
+from main.cart import Cart
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.http import request
-from django.shortcuts import render, get_object_or_404
-from .models import Product, Category
-from django.db.models import F, Q
-from .forms import ContactForm
+from django.views.decorators.http import require_POST
+from django.template.loader import render_to_string
 from django.conf import settings
+from django.db.models import F, Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from .models import Product, Category
+from .forms import ContactForm  
 
 def product_list(request, category_slug=None):
     products = Product.objects.select_related('category').filter(is_active=True)
@@ -71,12 +71,11 @@ def product_detail(request, id, slug):
     context = {
         "title": product.name,
         "product": product,
-        "related_products": related_products
+        "related_products": related_products,
     }
 
     return render(request, 'main/product_detail.html', context)
 
-from django.template.loader import render_to_string
 
 def contact_view(request):
     if request.method == 'POST':
@@ -118,3 +117,32 @@ def contact_view(request):
         form = ContactForm()
 
     return render(request, 'main/contact.html', {'title': 'Контакти', 'form': form})
+
+@require_POST
+def cart_add(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    quantity = int(request.POST.get('quantity', 1))
+
+    override = request.POST.get('override', False)
+    if isinstance(override, str):
+        override = override.lower() in ['true', '1', 'yes']
+
+    cart.add(product, quantity, override)
+    
+    next_url = request.POST.get('next')
+    if next_url:
+        return redirect(next_url)
+    return redirect('main:cart_detail')
+
+
+@require_POST
+def cart_remove(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    cart.remove(product)
+    return redirect('main:cart_detail')
+
+def cart_detail(request):
+    return render(request, 'main/cart_detail.html', {'title': 'Кошик покупок'})
+

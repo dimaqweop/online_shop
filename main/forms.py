@@ -25,3 +25,5 @@ class ContactForm(forms.Form):
                     'placeholder': "Введіть ваше повідомлення"
                 }
             ))
+
+
